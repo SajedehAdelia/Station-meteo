@@ -4,7 +4,7 @@
 #define ID_CLIENT_MQTT "ESP32-Temp-hum-cuisine"
 
 #define TOPIC_ROOT "StationMeteoAdeliaLoanGaelMaxence"
-#define TOPIC_LOCALISATION "cuisine"
+#define TOPIC_LOCALISATION "terrasse"
 #define TOPIC_SENSOR_THERMOMETRE "thermometre"
 #define TOPIC_SENSOR_PRESSION "pression"
 #define TOPIC_ALERTE "alerte"
