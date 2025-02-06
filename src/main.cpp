@@ -1,44 +1,23 @@
-#include <WiFi.h>  // ESP32 uses WiFi.h
-#include <Wire.h>
-#include <SPI.h>
-#include <Adafruit_BMP085.h>
-#include <HTTPClient.h>
-
-
-#define ADRESS 0x77 
-Adafruit_BMP085 bmp;
+#include <Arduino.h>
+#include "wifi_setup/wifi_setup.h"
+#include "mqtt_client/mqtt_client.h"
+#include "sensor/sensor.h"
+#include "config.h"
 
 void setup() {
-  Serial.begin(9600);
-  if (!bmp.begin(BMP085_STANDARD)) {
-    Serial.println("Could not find a valid BMP085 sensor, check wiring!");
-    while (1) {}
-  }
+    Serial.begin(115200);
+    pinMode(PIN_LED,OUTPUT);
+    initSensors();
 }
 
+unsigned long lastMsg = 0;
 void loop() {
-  // put your main code here, to run repeatedly:
-    Serial.print("Temperature = ");
-    Serial.print(bmp.readTemperature());
-    Serial.println(" *C");
-
-    Serial.print("Pressure = ");
-    Serial.print(bmp.readPressure());
-    Serial.println(" Pa");
-
-    Serial.print("Altitude = ");
-    Serial.print(bmp.readAltitude());
-    Serial.println(" meters");
-
-    Serial.print("Pressure at sealevel (calculated) = ");
-    Serial.print(bmp.readSealevelPressure());
-    Serial.println(" Pa");
-
-    Serial.print("Real altitude = ");
-    Serial.print(bmp.readAltitude(101500));
-    Serial.println(" meters");
-
-    Serial.println();
-
-    delay(1000);
+    connectWiFi();
+    connectMQTT();
+    
+    client.loop();
+    if (millis() - lastMsg > 5000) {
+        lastMsg = millis();
+        readAndSendSensorData();
+    }
 }
