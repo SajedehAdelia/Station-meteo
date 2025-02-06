@@ -23,3 +23,5 @@ const int HUMIDITE_MAX_ALERTE = 60;
 const int HUMIDITE_MIN_ALERTE = 40;
 
 #define PIN_LED 2
+#define DHTPIN 4
+#define DHTTYPE DHT11

@@ -4,9 +4,6 @@
 #include "../mqtt_client/mqtt_client.h"
 #include "config.h"
 
-#define DHTPIN 4
-#define DHTTYPE DHT11
-
 DHT dht(DHTPIN, DHTTYPE);
 
 void initSensors() {
