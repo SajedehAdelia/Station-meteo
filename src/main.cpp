@@ -6,11 +6,13 @@
 #include "mqtt/mqtt.h"
 #include "common.h"
 
+const int Contrast = 75;
 LiquidCrystal lcd(D10, D9, D5, D4, D3, D2);
 
 void setup() {
   Serial.begin(115200);
   lcd.begin(16, 2);
+  analogWrite(D6, Contrast);
 
   setup_wifi();
 

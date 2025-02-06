@@ -6,10 +6,10 @@
 #include <string>
 
 extern LiquidCrystal lcd;
-extern std::queue<Message> messageQueue;
-extern Message currentMessage;
-extern unsigned long lastDisplayTime;
-extern const unsigned long displayInterval;
+std::queue<Message> messageQueue;
+Message currentMessage;
+unsigned long lastDisplayTime = 0;
+const unsigned long displayInterval = 5000;
 
 const int buzzPin = D8;
 const int redPin = D0;
@@ -17,17 +17,17 @@ const int greenPin = D1;
 const int bluePin = D7;
 
 void activateAlert() {
-  digitalWrite(buzzPin, HIGH);
-  digitalWrite(redPin, HIGH);
-  digitalWrite(greenPin, LOW);
-  digitalWrite(bluePin, LOW);
+  tone(buzzPin, 1000);
+  analogWrite(redPin, 255);
+  analogWrite(greenPin, 0);
+  analogWrite(bluePin, 0);
 }
 
 void deactivateAlert() {
-  digitalWrite(buzzPin, LOW);
-  digitalWrite(redPin, LOW);
-  digitalWrite(greenPin, LOW);
-  digitalWrite(bluePin, LOW);
+  noTone(buzzPin);
+  analogWrite(redPin, 0);
+  analogWrite(greenPin, 0);
+  analogWrite(bluePin, 0);
 }
 
 void displayMessage(const Message& msg) {
@@ -38,8 +38,10 @@ void displayMessage(const Message& msg) {
   lcd.print(msg.payload.c_str());
 
   if (msg.isAlert) {
+    Serial.println("Alerte activée !");
     activateAlert();
   } else {
+    Serial.println("Alerte désactivée !");
     deactivateAlert();
   }
 }

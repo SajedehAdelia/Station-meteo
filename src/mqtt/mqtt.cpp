@@ -7,18 +7,14 @@
 #include <string>
 #include <LiquidCrystal.h>
 
-extern LiquidCrystal lcd;
-
 WiFiClient espClient;
 PubSubClient client(espClient);
-std::queue<Message> messageQueue;
-Message currentMessage;
-unsigned long lastDisplayTime = 0;
-const unsigned long displayInterval = 5000;
 
 const char *ssid = "Redmi Note 13 Pro 5G MAX";
 const char *password = "dw7zwujfdy8kvcv";
 const char *mqtt_server = "192.168.127.95";
+
+const std::string mainTopic = "StationMeteoAdeliaLoanGaelMaxence/";
 
 void setup_wifi() {
   delay(10);
@@ -38,7 +34,7 @@ void setup_wifi() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  Message wifiMessage = {"WiFi", std::string("connected: ") + WiFi.localIP().toString().c_str(), false};
+  Message wifiMessage = {"WiFi connected: ", WiFi.localIP().toString().c_str(), false};
   displayMessage(wifiMessage);
 }
 
@@ -47,7 +43,7 @@ void reconnect() {
     Serial.print("Attempting MQTT connection...");
     if (client.connect("ESP32Ecran")) {
       Serial.println("connected");
-      client.subscribe("StationMeteoAdeliaLoanGaelMaxence/#");
+      client.subscribe((mainTopic + "#").c_str());
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -60,14 +56,29 @@ void reconnect() {
 void callback(char* topic, byte* payload, unsigned int length) {
   std::string payloadStr((char*)payload, length);
   bool isAlert = strstr(topic, "alerte") != nullptr;
+  std::string topicStr(topic);
+  size_t pos = topicStr.find(mainTopic);
+  if (pos != std::string::npos) {
 
-  Message msg = {topic, payloadStr, isAlert};
-  if (isAlert) {
-    // If it's an alert, display it immediately
-    displayMessage(msg);
-    lastDisplayTime = millis();
-  } else {
-    // Otherwise, add it to the queue
-    messageQueue.push(msg);
+    // Extraire la partie "location"
+    pos += mainTopic.length();
+    size_t endPos = topicStr.find('/', pos);
+    std::string location = topicStr.substr(pos, endPos - pos);
+
+    // Extraire la partie "capteur"
+    pos = endPos + 1;
+    endPos = topicStr.find('/', pos);
+    std::string capteur = topicStr.substr(pos, endPos - pos);
+    if (!capteur.empty()) capteur[0] = toupper(capteur[0]);
+
+    Message msg = {capteur + " " + location + " :", payloadStr, isAlert};
+    if (isAlert) {
+      // If it's an alert, display it immediately
+      displayMessage(msg);
+      Serial.println("Alerte !");
+      lastDisplayTime = millis();
+    } else {
+      messageQueue.push(msg);
+    }
   }
 }
