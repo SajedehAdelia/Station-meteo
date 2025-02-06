@@ -2,70 +2,52 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085.h>
 #include <WiFi.h>
-#define BMP085_ADDRESS 0x76
 #include <SPI.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 
-const char* ssid = "Redmi Note 13 Pro 5G MAX";
-const char* password = "dw7zwujfdy8kvcv";
-
+const char* ssid = "Redmi Note 13 Pro 5G MAX";          // Remplace par ton SSID WiFi
+const char* password = "dw7zwujfdy8kvcv";       // Remplace par ton mot de passe WiFi
+const char* mqtt_server = "192.168.127.95"; // IP du serveur Mosquitto
+const char* topic_root = "StationMeteoAdeliaLoanGaelMaxence"; 
+const char* topic_localisation = "cuisine"; 
+const char* topic_sensor_thermometre = "thermometre"; 
+const char* topic_alert = "alert"; 
+const char* id_client_mqtt = "ESP32Client";
 
 Adafruit_BMP085 bmp;
 
 void setup() {
-  Serial.begin(115200);
+    Serial.begin(115200);
+    delay(1000); // Petit délai pour stabiliser l'affichage série
 
-  // Connect to Wi-Fi network
-  // WiFi.begin(ssid, password);
-  
-  // while (WiFi.status() != WL_CONNECTED) {
-  //   delay(500);
-  //   Serial.print(".");
-  // }
+    // Connexion au WiFi
+    Serial.print("Connexion au WiFi...");
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nConnecté au WiFi!");
 
-  // Print the IP address of the board
-  // Serial.print("IP address: ");
-  // Serial.println(WiFi.localIP());
-
-
-  // Initialize the BMP180 sensor
-  if (!bmp.begin(BMP085_ADDRESS)) {
-      Serial.println("Could not find a valid BMP085 sensor, check wiring!");
-      return;
-  }
+    // Initialisation du capteur BMP180
+    if (!bmp.begin()) {
+        Serial.println("Impossible de trouver un capteur BMP085/BMP180, vérifie le câblage !");
+        while (1);
+    }
 }
 
 void loop() {
-    // if (WiFi.status() == WL_CONNECTED) {
-    //     HTTPClient http;
+    float temperature = bmp.readTemperature();
+    float pressure = bmp.readPressure() / 100.0F;
 
-    //     // http.begin(serverName);
-    //     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    Serial.print("Température = ");
+    Serial.print(temperature, 1);
+    Serial.println(" °C");
+    
+    Serial.print("Pression = ");
+    Serial.print(pressure);
+    Serial.println(" hPa");
 
-    //     String postData = "sensor=ESP32&location=Salon&value1=22.5&value2=45.7&value3=1013.2";
-    //     int httpResponseCode = http.POST(postData);
-
-    //     if (httpResponseCode > 0) {
-    //         String response = http.getString();
-    //         Serial.println("Réponse serveur : " + response);
-    //     } else {
-    //         Serial.println("Erreur d'envoi HTTP");
-    //         Serial.println(httpResponseCode);
-    //     }
-
-    //     http.end();
-    // }
-
-  float temperature = bmp.readTemperature();
-  float pressure = bmp.readPressure() / 100.0F;
-
-  Serial.print("Temperature = ");
-  Serial.print(temperature, 1);
-  Serial.println(" °C");
-  Serial.print("Pressure = ");
-  Serial.print(pressure);
-  Serial.println(" hPa");
-
-  delay(1000);
+    delay(1000);
 }
