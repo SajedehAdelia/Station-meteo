@@ -1,18 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
     const weatherDataElement = document.getElementById("weather-data");
   
-    // Fetch the weather data from the server
-    fetch('/api/weather')
-      .then(response => response.json())
-      .then(data => {
-        weatherDataElement.innerHTML = `
-          <h2>Temperature: ${data.temperature}°C</h2>
-          <p>Humidity: ${data.humidity}%</p>
-          <p>Pressure: ${data.pressure} hPa</p>
-        `;
-      })
-      .catch(error => {
-        console.error('Error fetching weather data:', error);
-      });
+    function fetchSensorData(location) {
+      fetch(`/api/sensor/${location}`)
+        .then(response => response.json())
+        .then(data => {
+          let dataHtml = `<h2>Sensor Data for ${location}</h2>`;
+          data.forEach(sensorData => {
+            dataHtml += `
+              <p>Sensor: ${sensorData.sensor}</p>
+              <p>Value: ${sensorData.value}</p>
+              <p>Reading Time: ${sensorData.reading_time}</p>
+            `;
+          });
+          weatherDataElement.innerHTML = dataHtml;
+        })
+        .catch(error => {
+          console.error('Error fetching sensor data:', error);
+          weatherDataElement.innerHTML = `<p>Failed to load sensor data.</p>`;
+        });
+    }
+  
+    fetchSensorData('kitchen');
   });
   

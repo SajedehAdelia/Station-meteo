@@ -17,33 +17,38 @@ connection.connect((err) => {
   console.log('Connected to MySQL as id ' + connection.threadId);
 });
 
-app.use(express.static('public'));
+function fetchSensorData(location, callback) {
+  const query = `
+    SELECT sensor, value, reading_time
+    FROM SensorData
+    WHERE location = ?
+    AND sensor IN ('temperature', 'light')
+    ORDER BY reading_time DESC
+  `;
 
-function getWeatherData(callback) {
-  const query = 'SELECT temperature, humidity, pressure FROM weather_data ORDER BY timestamp DESC LIMIT 1';
-  connection.query(query, (err, results) => {
+  // Run the query with the location parameter
+  connection.query(query, [location], (err, results) => {
     if (err) {
-      console.error('Error fetching weather data:', err);
+      console.error('Error fetching sensor data:', err);
       return;
     }
-    if (results.length > 0) {
-      callback(results[0]);  
-    } else {
-      callback(null);  
-    }
+    callback(results);  
   });
 }
 
-app.get('/api/weather', (req, res) => {
-  getWeatherData((data) => {
-    if (data) {
+app.get('/api/sensor/:location', (req, res) => {
+  const location = req.params.location; 
+
+  fetchSensorData(location, (data) => {
+    if (data.length > 0) {
       res.json(data);  
     } else {
-      res.status(404).json({ error: 'Weather data not found' });
+      res.status(404).json({ error: `No sensor data found for location: ${location}` });
     }
   });
 });
 
+// Start the server
 app.listen(3000, () => {
   console.log('Server running on port 3000');
 });
