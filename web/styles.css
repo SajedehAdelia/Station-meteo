@@ -41,20 +41,11 @@ tr:nth-child(even) {
     background: #f9f9f9;
 }
 
-/* Alert Table */
-table.alert th {
-    background: #FFC107;
+/* Terrasse Table */
+table.terrace th {
+    background: #28A745;
 }
 
-table.alert tr:hover {
-    background: #ffe082;
-}
-
-/* Error Table */
-table.error th {
-    background: #DC3545;
-}
-
-table.error tr:hover {
-    background: #f8d7da;
+table.terrace tr:hover {
+    background: #d4edda;
 }
