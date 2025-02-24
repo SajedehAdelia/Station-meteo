@@ -1,0 +1,85 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fb;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Main container */
+  .container {
+    width: 80%;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  
+  /* Title */
+  h1 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Weather data styling */
+  #weather-data {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 30px;
+  }
+  
+  #weather-data h2 {
+    font-size: 2em;
+    color: #4CAF50;
+    margin-bottom: 10px;
+  }
+  
+  #weather-data p {
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  /* Card for individual weather metrics */
+  .weather-card {
+    display: inline-block;
+    width: 30%;
+    margin: 10px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .weather-card h3 {
+    font-size: 1.5em;
+    margin: 10px 0;
+  }
+  
+  .weather-card p {
+    font-size: 1.2em;
+    color: #333;
+    margin: 5px 0;
+  }
+  
+  /* Responsive design: Adjust the layout for smaller screens */
+  @media (max-width: 768px) {
+    .weather-card {
+      width: 45%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .weather-card {
+      width: 100%;
+      margin: 10px 0;
+    }
+  }
+  
