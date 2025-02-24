@@ -1,33 +1,25 @@
-#include "display.h"
 #include "mqtt/mqtt.h"
 #include "common.h"
-#include <LiquidCrystal.h>
+#include "display.h"
+#include <LiquidCrystal_I2C.h>
 #include <queue>
 #include <string>
 
-extern LiquidCrystal lcd;
+extern LiquidCrystal_I2C lcd;
 std::queue<Message> messageQueue;
 Message currentMessage;
 unsigned long lastDisplayTime = 0;
-const unsigned long displayInterval = 5000;
-
-const int buzzPin = D8;
-const int redPin = D0;
-const int greenPin = D1;
-const int bluePin = D7;
+const unsigned long displayInterval = 8000;
+bool alertIsOn = false;
 
 void activateAlert() {
   tone(buzzPin, 1000);
-  analogWrite(redPin, 255);
-  analogWrite(greenPin, 0);
-  analogWrite(bluePin, 0);
+  alertIsOn = true;
 }
 
 void deactivateAlert() {
   noTone(buzzPin);
-  analogWrite(redPin, 0);
-  analogWrite(greenPin, 0);
-  analogWrite(bluePin, 0);
+  alertIsOn = false;
 }
 
 void displayMessage(const Message& msg) {
@@ -36,12 +28,10 @@ void displayMessage(const Message& msg) {
   lcd.print(msg.topic.c_str());
   lcd.setCursor(0, 1);
   lcd.print(msg.payload.c_str());
-
+  
   if (msg.isAlert) {
-    Serial.println("Alerte activée !");
     activateAlert();
-  } else {
-    Serial.println("Alerte désactivée !");
+  } else if (alertIsOn) {
     deactivateAlert();
   }
 }

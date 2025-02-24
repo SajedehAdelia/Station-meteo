@@ -1,21 +1,18 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 #include <queue>
 #include <string>
 #include "common.h"
 
-extern LiquidCrystal lcd;
+const int buzzPin = D10;
+
+extern LiquidCrystal_I2C lcd;
 extern std::queue<Message> messageQueue;
 extern Message currentMessage;
 extern unsigned long lastDisplayTime;
 extern const unsigned long displayInterval;
-
-extern const int buzzPin;
-extern const int redPin;
-extern const int greenPin;
-extern const int bluePin;
 
 void displayMessage(const Message& msg);
 void handleDisplay();

@@ -1,4 +1,5 @@
-#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 #include <Arduino.h>
 #include <Wifi.h>
 #include <PubSubClient.h>
@@ -6,26 +7,27 @@
 #include "mqtt/mqtt.h"
 #include "common.h"
 
-const int Contrast = 75;
-LiquidCrystal lcd(D10, D9, D5, D4, D3, D2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
-  lcd.begin(16, 2);
-  analogWrite(D6, Contrast);
+  Wire.begin(SDA, SCL);
+
+  lcd.init();
+  lcd.clear();
+  lcd.backlight();
 
   setup_wifi();
 
   pinMode(buzzPin, OUTPUT);
-  pinMode(redPin, OUTPUT);
-  pinMode(greenPin, OUTPUT);
-  pinMode(bluePin, OUTPUT);
 
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 }
 
-void loop() {
+void loop()
+{
   if (!client.connected()) {
     reconnect();
   }

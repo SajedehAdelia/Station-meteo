@@ -5,14 +5,13 @@
 #include <PubSubClient.h>
 #include <queue>
 #include <string>
-#include <LiquidCrystal.h>
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 const char *ssid = "Redmi Note 13 Pro 5G MAX";
 const char *password = "dw7zwujfdy8kvcv";
-const char *mqtt_server = "192.168.127.95";
+const char *mqtt_server = "192.168.231.95";
 
 const std::string mainTopic = "StationMeteoAdeliaLoanGaelMaxence/";
 
@@ -59,7 +58,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   std::string topicStr(topic);
   size_t pos = topicStr.find(mainTopic);
   if (pos != std::string::npos) {
-
     // Extraire la partie "location"
     pos += mainTopic.length();
     size_t endPos = topicStr.find('/', pos);
@@ -70,14 +68,33 @@ void callback(char* topic, byte* payload, unsigned int length) {
     endPos = topicStr.find('/', pos);
     std::string capteur = topicStr.substr(pos, endPos - pos);
     if (!capteur.empty()) capteur[0] = toupper(capteur[0]);
+    if (capteur.length() > 5) {
+      capteur = capteur.substr(0, 5);
+    }
 
     Message msg = {capteur + " " + location + " :", payloadStr, isAlert};
+
+    bool messageExists = false;
+    std::queue<Message> tempQueue;
+    while (!messageQueue.empty()) {
+      Message existingMsg = messageQueue.front();
+      messageQueue.pop();
+      if (existingMsg.topic == msg.topic) {
+        messageExists = true;
+        tempQueue.push(msg);
+      } else {
+        tempQueue.push(existingMsg);
+      }
+    }
+    messageQueue = tempQueue;
+
     if (isAlert) {
       // If it's an alert, display it immediately
       displayMessage(msg);
       Serial.println("Alerte !");
       lastDisplayTime = millis();
-    } else {
+    }
+    else if (!messageExists) {
       messageQueue.push(msg);
     }
   }
