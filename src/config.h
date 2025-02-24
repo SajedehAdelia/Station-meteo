@@ -1,7 +1,7 @@
 #define SSID "Redmi Note 13 Pro 5G MAX"
 #define PASSWORD "dw7zwujfdy8kvcv"
 #define MQTT_SERVER "192.168.231.95"
-#define ID_CLIENT_MQTT "ESP32-lum-terrasse"
+#define ID_CLIENT_MQTT "ESP32-terrasse"
 
 #define TOPIC_ROOT "StationMeteoAdeliaLoanGaelMaxence"
 #define TOPIC_LOCALISATION "terrasse"
