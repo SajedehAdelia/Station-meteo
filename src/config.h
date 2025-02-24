@@ -1,10 +1,10 @@
 #define SSID "Redmi Note 13 Pro 5G MAX"
 #define PASSWORD "dw7zwujfdy8kvcv"
 #define MQTT_SERVER "192.168.231.95"
-#define ID_CLIENT_MQTT "ESP32-lum-terrasse"
+#define ID_CLIENT_MQTT "ESP32-cuisine"
 
 #define TOPIC_ROOT "StationMeteoAdeliaLoanGaelMaxence"
-#define TOPIC_LOCALISATION "terrasse"
+#define TOPIC_LOCALISATION "cuisine"
 #define TOPIC_SENSOR_LUMINOSITE "luminosite"
 #define TOPIC_SENSOR_THERMOMETRE "thermometre"
 #define TOPIC_SENSOR_HUMIDITE "humidite"
@@ -28,9 +28,9 @@ const int TEMPERATURE_MIN_ALERTE = -10;
 const int HUMIDITE_MAX_ALERTE = 60;
 const int HUMIDITE_MIN_ALERTE = 40;
 
-#define PIN_LED LED_BUILTIN
+#define PIN_LED 2
 #define ADRESS 0x77
 
 
 #define DHTTYPE DHT11
-#define DHTPIN D0
+#define DHTPIN 4
