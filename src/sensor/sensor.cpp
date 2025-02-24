@@ -5,38 +5,35 @@
 #include <Adafruit_BMP085.h>
 #include "../mqtt_client/mqtt_client.h"
 #include "config.h"
+#include <BH1750.h>
 
-Adafruit_BMP085 bmp;
+// Adafruit_BMP085 bmp;
+BH1750 lightMeter;
 
 void initSensors() {
-    if (!bmp.begin(BMP085_STANDARD)) {
-        while (1) {
-            sleep(1000); 
-            Serial.println("Could not find a valid BMP085 sensor, check wiring!");
-        }
-  }
+    Wire.begin();
+    lightMeter.begin();
+
+    Serial.println(F("BH1750 Test begin"));
+//     if (!bmp.begin(BMP085_STANDARD)) {
+//         while (1) {
+//             sleep(1000); 
+//             Serial.println("Could not find a valid BMP085 sensor, check wiring!");
+//         }
+//   }
 }
 
 void readAndSendSensorData() {
-    float temperature = bmp.readTemperature();
-    int32_t pression = bmp.readPressure();
-
-    if (isnan(temperature) || isnan(pression)) {
+    float lux = lightMeter.readLightLevel();
+    if (isnan(lux)) {
         publishMessage(TOPIC_ERREUR, ERREUR_BRANCHEMENT);
     } else {
-        publishMessage(TOPIC_SENSOR_THERMOMETRE, String(temperature).c_str());
-        publishMessage(TOPIC_SENSOR_PRESSION, String(pression).c_str());
-
-        if (temperature < TEMPERATURE_MIN_ALERTE) {
-            publishMessage(TOPIC_ALERTE, ALERTE_MIN_TEMPERATURE);
-        } else if (temperature > TEMPERATURE_MAX_ALERTE) {
-            publishMessage(TOPIC_ALERTE, ALERTE_MAX_TEMPERATURE);
-        }
-
-        if (pression < PRESSION_MIN_ALERTE) {
-            publishMessage(TOPIC_ALERTE, ALERTE_MIN_PRESSION);
-        } else if (pression > PRESSION_MAX_ALERTE) {
-            publishMessage(TOPIC_ALERTE, ALERTE_MAX_PRESSION);
+        publishMessage(TOPIC_SENSOR_LUMINOSITE, String(lux).c_str());
+        
+        if (lux < LUMINOSITE_MIN_ALERTE) {
+            publishMessage(TOPIC_ALERTE, ALERTE_MIN_LUMINOSITE);
+        } else if (lux > LUMINOSITE_MAX_ALERTE) {
+            publishMessage(TOPIC_ALERTE, ALERTE_MAX_LUMINOSITE);
         }
     }
 }
