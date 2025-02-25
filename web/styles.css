@@ -15,7 +15,7 @@ header {
     font-weight: bold;
 }
 
-/* Conteneur principal pour affichage horizontal */
+/* Conteneur principal */
 #dashboard {
     display: flex;
     flex-wrap: nowrap;
@@ -63,7 +63,7 @@ header {
 /* Tableaux des capteurs */
 .sensor-table {
     width: 100%;
-    min-width: 500px; /* Largeur minimale */
+    min-width: 500px;
     border-collapse: collapse;
 }
 
@@ -75,5 +75,53 @@ header {
 
 .sensor-table th {
     background: #007bff;
+    color: white;
+}
+
+/* Container des alertes et erreurs en bas */
+#alerts-container {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Style spécifique pour les alertes */
+.alert-section {
+    width: 80%;
+    margin: 0 auto 20px;
+    background-color: rgba(255, 255, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Style spécifique pour les erreurs */
+.error-section {
+    width: 80%;
+    margin: 0 auto 20px;
+    background-color: rgba(255, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Couleur des titres */
+.alert-section h2 {
+    color: #ff9800;
+}
+
+.error-section h2 {
+    color: red;
+}
+
+/* Style des tableaux d'alertes et erreurs */
+.alert-table th {
+    background-color: yellow;
+    color: black;
+}
+
+.error-table th {
+    background-color: red;
     color: white;
 }
