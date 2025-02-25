@@ -25,8 +25,8 @@ const int LUMINOSITE_MIN_ALERTE = 10;
 const int TEMPERATURE_MAX_ALERTE = 35;
 const int TEMPERATURE_MIN_ALERTE = -10;
 
-const int HUMIDITE_MAX_ALERTE = 60;
-const int HUMIDITE_MIN_ALERTE = 40;
+const int HUMIDITE_MAX_ALERTE = 70;
+const int HUMIDITE_MIN_ALERTE = 30;
 
 #define PIN_LED 2
 #define ADRESS 0x77
