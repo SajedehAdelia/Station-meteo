@@ -1,20 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather Station</title>
-  <link rel="stylesheet" href="styles.css">  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard MQTT & MySQL</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-  <div class="container">
-    <h1>Weather Station</h1>
-
-    <div id="weather-data">
-    </div>
-  </div>
-
-  <script src="app.js"></script>
+    <h1>Historique des données</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Valeur</th>
+                <th>Horodatage</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+            <!-- Les données seront insérées ici -->
+        </tbody>
+    </table>
+    <script src="script.js"></script>
 </body>
 </html>

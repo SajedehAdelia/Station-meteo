@@ -1,26 +1,40 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const weatherDataElement = document.getElementById("weather-data");
-  
-    function fetchSensorData(location) {
-      fetch(`/api/sensor/${location}`)
-        .then(response => response.json())
-        .then(data => {
-          let dataHtml = `<h2>Sensor Data for ${location}</h2>`;
-          data.forEach(sensorData => {
-            dataHtml += `
-              <p>Sensor: ${sensorData.sensor}</p>
-              <p>Value: ${sensorData.value}</p>
-              <p>Reading Time: ${sensorData.reading_time}</p>
-            `;
-          });
-          weatherDataElement.innerHTML = dataHtml;
-        })
-        .catch(error => {
-          console.error('Error fetching sensor data:', error);
-          weatherDataElement.innerHTML = `<p>Failed to load sensor data.</p>`;
-        });
-    }
-  
-    fetchSensorData('kitchen');
+// Connexion à la base MySQL en direct
+const dbConfig = {
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "mqtt_db"
+};
+
+async function fetchData() {
+  const connection = await window.mysql.createConnection(dbConfig);
+  const [rows] = await connection.execute("SELECT id, value, timestamp FROM data ORDER BY timestamp DESC");
+  connection.end();
+  return rows;
+}
+
+// Charger les données historiques depuis MySQL
+fetchData().then(data => {
+  const table = document.getElementById('data-table');
+  data.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.id}</td><td>${row.value}</td><td>${row.timestamp}</td>`;
+      table.appendChild(tr);
   });
-  
+});
+
+// Connexion au broker MQTT
+const client = mqtt.connect('ws://localhost:1884');
+
+client.on('connect', () => {
+  console.log('Connecté à MQTT');
+  client.subscribe('mon/topic');
+});
+
+client.on('message', (topic, message) => {
+  const table = document.getElementById('data-table');
+  const data = JSON.parse(message.toString());
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${data.id}</td><td>${data.value}</td><td>${data.timestamp}</td>`;
+  table.prepend(tr);
+});
